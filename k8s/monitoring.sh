@@ -17,7 +17,7 @@ helm install kube-prometheus-stack prometheus-community/kube-prometheus-stack \
   --create-namespace \
   --set prometheus.service.type=LoadBalancer \
   --set grafana.service.type=LoadBalancer \
-  --set grafana.adminPassword='admin123'
+  --set grafana.adminPassword="$GRAFANA_ADMIN_PASSWORD"
 
 echo "Installation started. Use the commands below to get LoadBalancer IPs:"
 
