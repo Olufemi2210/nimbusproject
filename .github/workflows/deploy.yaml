@@ -14,18 +14,20 @@ jobs:
     name: SonarCloud Code Analysis
     runs-on: ubuntu-latest
 
-    steps:
+       steps:
       - name: Checkout code
         uses: actions/checkout@v3
         with:
-          fetch-depth: 0 # Shallow clones should be disabled for better analysis
-       - name: Set up Java 21
-      uses: actions/setup-java@v4
-      with:
-        distribution: 'temurin'
-        java-version: '21'
-    - name: SonarCloud Scan
-    uses: SonarSource/sonarcloud-github-action@v2
+          fetch-depth: 0
+
+      - name: Set up Java 21
+        uses: actions/setup-java@v4
+        with:
+          distribution: 'temurin'
+          java-version: '21'
+
+      - name: SonarCloud Scan
+        uses: SonarSource/sonarcloud-github-action@v2
         with:
           projectBaseDir: ./app
           args: >
@@ -33,9 +35,8 @@ jobs:
             -Dsonar.organization=${{ secrets.SONAR_ORGANIZATION }}
         env:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Check SonarCloud Quality Gate
+        - name: Check SonarCloud Quality Gate
         run: |
           echo "✅ SonarCloud scan completed. Check quality gate status."
           # Quality gate status is automatically checked by SonarCloud action
