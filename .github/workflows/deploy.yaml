@@ -10,11 +10,11 @@ permissions:
   security-events: write
 jobs:
   # Job 1: Code Security Scan (runs first)
-  code-security:
+   code-security:
     name: SonarCloud Code Analysis
     runs-on: ubuntu-latest
 
-       steps:
+    steps:
       - name: Checkout code
         uses: actions/checkout@v3
         with:
@@ -36,9 +36,9 @@ jobs:
         env:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
 
-        - name: Check SonarCloud Quality Gate
+      - name: Check SonarCloud Quality Gate
         run: |
-          echo "✅ SonarCloud scan completed. Check quality gate status."
+          echo "SonarCloud scan completed. Check quality gate status."
           # Quality gate status is automatically checked by SonarCloud action
 
   # Job 2: Build and Scan Image (runs after code-security passes)
