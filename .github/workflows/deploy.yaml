@@ -10,9 +10,7 @@ permissions:
   security-events: write
 jobs:
   # Job 1: Code Security Scan (runs first)
-   code-security:
-    name: SonarCloud Code Analysis
-    runs-on: ubuntu-latest
+ 
 
     code-security:
     name: SonarCloud Code Analysis
