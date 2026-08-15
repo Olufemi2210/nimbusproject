@@ -47,7 +47,7 @@ jobs:
 
   # Job 2: Build and Scan Image (runs after code-security passes)
   build-and-scan:
-    name: Build Docker Image & Trivy Scan
+    name: "Build Docker Image & Trivy Scan"
     runs-on: ubuntu-latest
     needs: code-security  # Only runs if SonarCloud passes
 
