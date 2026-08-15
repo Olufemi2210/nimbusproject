@@ -32,7 +32,7 @@ code-security:
         uses: SonarSource/sonarcloud-github-action@v2
         with:
           projectBaseDir: ./app
-          args: >.
+          args: >
             -Dsonar.projectKey=${{ secrets.SONAR_PROJECT_KEY }}
             -Dsonar.organization=${{ secrets.SONAR_ORGANIZATION }}
         env:
