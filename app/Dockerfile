@@ -1,5 +1,7 @@
 # Use the official Node.js image as a base
-FROM node:18
+FROM node:22-alpine3.22
+RUN npm install -g npm@11
+RUN apk update && apk upgrade --no-cache
 
 # Set the working directory inside the container
 WORKDIR /app
