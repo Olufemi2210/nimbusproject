@@ -45,7 +45,7 @@ jobs:
 
   # Job 2: Build and Scan Image
   build-and-scan:
-    name: "Build Docker Image & Trivy Scan"
+    name: Build Docker Image & Trivy Scan
     runs-on: ubuntu-latest
     needs: code-security
 
@@ -64,23 +64,37 @@ jobs:
 
       - name: Build Docker image
         run: |
-          docker build -t nimbusacrdev001.azurecr.io/nimbus-app:v1 ./app
+          docker build \
+            --no-cache \
+            -t nimbusacrdev001.azurecr.io/nimbus-app:v1 \
+            ./app
 
-      - name: Run Trivy vulnerability scanner on built image
-        uses: aquasecurity/trivy-action@master
+      - name: Save Docker image for Trivy
+        run: |
+          docker save \
+            nimbusacrdev001.azurecr.io/nimbus-app:v1 \
+            -o nimbus-app.tar
+
+      - name: Run Trivy vulnerability scanner
+        uses: aquasecurity/trivy-action@v0.36.0
         with:
-          image-ref: nimbusacrdev001.azurecr.io/nimbus-app:v1
+          input: nimbus-app.tar
+          scan-type: image
+          scanners: vuln
           format: table
           exit-code: '1'
           severity: 'CRITICAL,HIGH'
           ignore-unfixed: true
 
       - name: Run Trivy full report
-        uses: aquasecurity/trivy-action@master
+        uses: aquasecurity/trivy-action@v0.36.0
         with:
-          image-ref: nimbusacrdev001.azurecr.io/nimbus-app:v1
+          input: nimbus-app.tar
+          scan-type: image
+          scanners: vuln
           format: sarif
           output: trivy-results.sarif
+          severity: 'CRITICAL,HIGH'
 
       - name: Push Docker image to ACR
         run: |
@@ -115,8 +129,9 @@ jobs:
 
       - name: Verify deployment
         run: |
-          kubectl rollout status deployment/my-app-deployment -n dev
+          kubectl rollout status deployment/my-app-deployment -n dev --timeout=5m
           kubectl get pods -n dev
+          kubectl get svc -n dev
 
   # Job 4: Send Success Notification
   notify:
