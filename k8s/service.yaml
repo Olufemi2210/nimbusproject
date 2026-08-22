@@ -9,6 +9,6 @@ spec:
     app: my-app
   ports:
     - protocol: TCP
-      port: 80        # Service port
-      targetPort: 3000  # Container port
+      port: 80
+      targetPort: 80
   type: LoadBalancer

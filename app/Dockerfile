@@ -1,24 +1,31 @@
-# Use the official Node.js image as a base
-FROM node:22-alpine3.22
-RUN npm install -g npm@11
-RUN apk update && apk upgrade --no-cache
+# =========================
+# Stage 1: Build React app
+# =========================
+FROM node:22-alpine3.22 AS builder
 
-# Set the working directory inside the container
+RUN apk update && apk upgrade --no-cache
+RUN npm install -g npm@10.9.9
+
 WORKDIR /app
 
-# Copy package.json and package-lock.json first (for caching)
-COPY package*.json ./
+COPY package.json package-lock.json ./
 
-# Install dependencies
-RUN npm install 
+RUN npm ci
 
-# Copy the rest of the application code
 COPY . .
-RUN npm run build 
-RUN npm install -g serve
 
-# Expose the port your app runs on (change if different)
-EXPOSE 3000
+RUN npm run build
 
-# Run the app
-CMD ["serve", "-s", "build", "-l", "3000"]
+
+# =========================
+# Stage 2: Production image
+# =========================
+FROM nginx:alpine AS runtime
+
+RUN apk update && apk upgrade --no-cache
+
+COPY --from=builder /app/build /usr/share/nginx/html
+
+EXPOSE 80
+
+CMD ["nginx", "-g", "daemon off;"]
